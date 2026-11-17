@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tambah Catatan</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4efff;
+    color: #40334f;
+    margin: 0;
+    padding: 25px;
+}
+.container {
+    max-width: 650px;
+    margin: 30px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 5px 15px #d9c9ef;
+}
+h1 {
+    text-align: center;
+    color: #8864c5;
+}
+nav {
+    text-align: center;
+    margin: 20px;
+}
+nav a {
+    color: #8864c5;
+    text-decoration: none;
+    margin: 10px;
+    font-weight: bold;
+}
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    box-sizing: border-box;
+    border: 1px solid #d8c8f2;
+    border-radius: 10px;
+}
+textarea {
+    height: 150px;
+}
+button {
+    background: #a98be7;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>✍️ Tambah Catatan</h1>
+
+<nav>
+<a href="index.html">Beranda</a>
+<a href="tambah.html">Tambah Catatan</a>
+<a href="daftar.html">Daftar Catatan</a>
+</nav>
+
+<h3>Tulis Ceritamu Hari Ini</h3>
+
+<input type="text" id="judul" placeholder="Judul Catatan">
+
+<textarea id="isi" placeholder="Tuliskan cerita harianmu..."></textarea>
+
+<button onclick="simpan()">Simpan Catatan</button>
+
+<p id="pesan"></p>
+</div>
+
+<script>
+function simpan() {
+    let judul = document.getElementById("judul").value.trim();
+    let isi = document.getElementById("isi").value.trim();
+
+    if (!judul || !isi) {
+        alert("Judul dan isi harus diisi!");
+        return;
+    }
+
+    let catatan = JSON.parse(
+        localStorage.getItem("catatanHarian") || "[]"
+    );
+
+    catatan.unshift({
+        judul: judul,
+        isi: isi,
+        tanggal: new Date().toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        })
+    });
+
+    localStorage.setItem(
+        "catatanHarian",
+        JSON.stringify(catatan)
+    );
+
+    alert("Catatan berhasil disimpan!");
+
+    document.getElementById("judul").value = "";
+    document.getElementById("isi").value = "";
+}
+</script>
+
+</body>
+</html>
