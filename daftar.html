@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daftar Catatan</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4efff;
+    color: #40334f;
+    padding: 25px;
+}
+.container {
+    max-width: 750px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 5px 15px #d9c9ef;
+}
+h1, h2 {
+    color: #8864c5;
+    text-align: center;
+}
+nav {
+    text-align: center;
+    margin: 20px 0;
+}
+nav a {
+    color: #8864c5;
+    text-decoration: none;
+    margin: 8px;
+    font-weight: bold;
+}
+.catatan {
+    background: #faf7ff;
+    padding: 18px;
+    margin: 15px 0;
+    border-left: 5px solid #b69be9;
+    border-radius: 10px;
+}
+.tanggal {
+    color: #999;
+    font-size: 12px;
+}
+.isi {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+button {
+    padding: 9px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.hapus {
+    background: #f8d9e0;
+    color: #a43d58;
+}
+.edit {
+    background: #e6dafa;
+    color: #63469c;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📚 Daftar Catatan</h1>
+
+<nav>
+<a href="index.html">Beranda</a>
+<a href="tambah.html">Tambah Catatan</a>
+<a href="daftar.html">Daftar Catatan</a>
+</nav>
+
+<h2>Catatan Harian Saya</h2>
+
+<div id="daftar"></div>
+
+</div>
+
+<script>
+function tampilkan() {
+    let data = JSON.parse(
+        localStorage.getItem("catatanHarian") || "[]"
+    );
+
+    let daftar = document.getElementById("daftar");
+
+    daftar.innerHTML = "";
+
+    if (data.length === 0) {
+        daftar.innerHTML =
+        "<p style='text-align:center'>Belum ada catatan.</p>";
+        return;
+    }
+
+    data.forEach((item, index) => {
+        let kotak = document.createElement("div");
+        kotak.className = "catatan";
+
+        let judul = document.createElement("h3");
+        judul.textContent = item.judul;
+
+        let tanggal = document.createElement("p");
+        tanggal.className = "tanggal";
+        tanggal.textContent = item.tanggal;
+
+        let isi = document.createElement("p");
+        isi.className = "isi";
+        isi.textContent = item.isi;
+
+        let edit = document.createElement("button");
+        edit.className = "edit";
+        edit.textContent = "Edit";
+        edit.onclick = function() {
+            localStorage.setItem("editIndex", index);
+            window.location.href = "tambah.html";
+        };
+
+        let hapus = document.createElement("button");
+        hapus.className = "hapus";
+        hapus.textContent = "Hapus";
+        hapus.onclick = function() {
+            if (confirm("Hapus catatan ini?")) {
+                data.splice(index, 1);
+                localStorage.setItem(
+                    "catatanHarian",
+                    JSON.stringify(data)
+                );
+                tampilkan();
+            }
+        };
+
+        kotak.append(judul, tanggal, isi, edit, hapus);
+        daftar.appendChild(kotak);
+    });
+}
+
+tampilkan();
+</script>
+
+</body>
+</html>
