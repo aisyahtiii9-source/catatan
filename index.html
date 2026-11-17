@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -17,21 +18,20 @@
 body {
     background: #f4efff;
     color: #40334f;
-    padding: 30px 15px;
+    padding: 20px;
 }
 
 .container {
-    max-width: 850px;
+    max-width: 900px;
     margin: auto;
 }
 
 header {
-    text-align: center;
-    padding: 30px;
-    background: linear-gradient(135deg, #cbb4f5, #a98be7);
+    background: linear-gradient(135deg,#cbb4f5,#a98be7);
     color: white;
+    text-align: center;
+    padding: 35px 15px;
     border-radius: 20px;
-    margin-bottom: 25px;
 }
 
 header h1 {
@@ -39,21 +39,41 @@ header h1 {
     margin-bottom: 10px;
 }
 
-header p {
-    font-size: 15px;
+nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: white;
+    padding: 18px;
+    border-radius: 15px;
+    margin: 20px 0;
 }
 
-.form-catatan, .daftar-catatan {
+nav a {
+    text-decoration: none;
+    color: #805bb8;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 9px;
+}
+
+nav a:hover {
+    background: #eee4ff;
+}
+
+section {
     background: white;
     padding: 25px;
     border-radius: 18px;
     margin-bottom: 20px;
     box-shadow: 0 5px 15px #d9c9ef;
+    scroll-margin-top: 15px;
 }
 
 h2 {
-    margin-bottom: 18px;
     color: #8864c5;
+    margin-bottom: 20px;
 }
 
 input, textarea {
@@ -62,8 +82,8 @@ input, textarea {
     margin-bottom: 15px;
     border: 1px solid #d8c8f2;
     border-radius: 10px;
-    outline: none;
     font-size: 15px;
+    outline: none;
 }
 
 textarea {
@@ -71,16 +91,13 @@ textarea {
     resize: vertical;
 }
 
-input:focus, textarea:focus {
-    border-color: #a98be7;
-}
-
 button {
-    border: none;
     padding: 11px 18px;
+    border: none;
     border-radius: 9px;
     cursor: pointer;
-    font-size: 14px;
+    margin-right: 5px;
+    margin-top: 5px;
 }
 
 .simpan {
@@ -88,8 +105,14 @@ button {
     color: white;
 }
 
-.simpan:hover {
-    background: #8966cb;
+.edit {
+    background: #e6dafa;
+    color: #63469c;
+}
+
+.hapus {
+    background: #f8d9e0;
+    color: #a43d58;
 }
 
 .catatan {
@@ -101,8 +124,8 @@ button {
 }
 
 .catatan h3 {
-    margin-bottom: 8px;
     color: #7553ae;
+    margin-bottom: 8px;
 }
 
 .tanggal {
@@ -114,18 +137,7 @@ button {
 .isi {
     white-space: pre-wrap;
     line-height: 1.6;
-    margin-bottom: 12px;
-}
-
-.edit {
-    background: #e6dafa;
-    color: #63469c;
-    margin-right: 5px;
-}
-
-.hapus {
-    background: #f8d9e0;
-    color: #a43d58;
+    margin-bottom: 10px;
 }
 
 .kosong {
@@ -136,16 +148,10 @@ button {
 
 footer {
     text-align: center;
-    margin-top: 25px;
     color: #9b8bad;
-    font-size: 13px;
+    padding: 20px;
 }
 
-@media(max-width: 600px) {
-    header h1 {
-        font-size: 25px;
-    }
-}
 </style>
 </head>
 
@@ -153,12 +159,18 @@ footer {
 
 <div class="container">
 
-<header>
+<header id="beranda">
     <h1>📖 CATATAN HARIAN</h1>
     <p>Tempat menyimpan cerita dan kenangan setiap hari.</p>
 </header>
 
-<section class="form-catatan">
+<nav>
+    <a href="#beranda">🏠 Beranda</a>
+    <a href="#tambah">✍️ Tambah Catatan</a>
+    <a href="#daftar">📚 Daftar Catatan</a>
+</nav>
+
+<section id="tambah">
     <h2>✍️ Tulis Catatan Baru</h2>
 
     <input type="text" id="judul"
@@ -170,13 +182,16 @@ footer {
     <button class="simpan" onclick="simpanCatatan()">
         Simpan Catatan
     </button>
+
+    <button class="edit" id="batal"
+    onclick="batalEdit()" style="display:none">
+        Batal Edit
+    </button>
 </section>
 
-<section class="daftar-catatan">
+<section id="daftar">
     <h2>📚 Daftar Catatan</h2>
-    <div id="daftar">
-        <p class="kosong">Belum ada catatan.</p>
-    </div>
+    <div id="daftarCatatan"></div>
 </section>
 
 <footer>
@@ -186,14 +201,66 @@ footer {
 </div>
 
 <script>
+
 let catatan = JSON.parse(
     localStorage.getItem("catatanHarian")
 ) || [];
 
 let editIndex = -1;
 
+function simpanData() {
+    localStorage.setItem(
+        "catatanHarian",
+        JSON.stringify(catatan)
+    );
+}
+
+function simpanCatatan() {
+
+    let judul = document.getElementById("judul").value.trim();
+    let isi = document.getElementById("isi").value.trim();
+
+    if (judul === "" || isi === "") {
+        alert("Judul dan isi catatan harus diisi!");
+        return;
+    }
+
+    if (editIndex === -1) {
+
+        let tanggal = new Date().toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+
+        catatan.unshift({
+            judul: judul,
+            isi: isi,
+            tanggal: tanggal
+        });
+
+        alert("Catatan berhasil disimpan!");
+
+    } else {
+
+        catatan[editIndex].judul = judul;
+        catatan[editIndex].isi = isi;
+
+        editIndex = -1;
+
+        document.getElementById("batal").style.display = "none";
+
+        alert("Catatan berhasil diperbarui!");
+    }
+
+    simpanData();
+    kosongkanForm();
+    tampilkanCatatan();
+}
+
 function tampilkanCatatan() {
-    let daftar = document.getElementById("daftar");
+
+    let daftar = document.getElementById("daftarCatatan");
 
     daftar.innerHTML = "";
 
@@ -204,73 +271,51 @@ function tampilkanCatatan() {
     }
 
     catatan.forEach((data, index) => {
-        daftar.innerHTML += `
-        <div class="catatan">
-            <h3>${escapeHTML(data.judul)}</h3>
-            <p class="tanggal">${data.tanggal}</p>
-            <p class="isi">${escapeHTML(data.isi)}</p>
 
-            <button class="edit"
-            onclick="editCatatan(${index})">
-                Edit
-            </button>
+        let kotak = document.createElement("div");
+        kotak.className = "catatan";
 
-            <button class="hapus"
-            onclick="hapusCatatan(${index})">
-                Hapus
-            </button>
-        </div>
-        `;
+        let judul = document.createElement("h3");
+        judul.textContent = data.judul;
+
+        let tanggal = document.createElement("p");
+        tanggal.className = "tanggal";
+        tanggal.textContent = data.tanggal;
+
+        let isi = document.createElement("p");
+        isi.className = "isi";
+        isi.textContent = data.isi;
+
+        let tombolEdit = document.createElement("button");
+        tombolEdit.className = "edit";
+        tombolEdit.textContent = "Edit";
+
+        tombolEdit.onclick = function() {
+            editCatatan(index);
+        };
+
+        let tombolHapus = document.createElement("button");
+        tombolHapus.className = "hapus";
+        tombolHapus.textContent = "Hapus";
+
+        tombolHapus.onclick = function() {
+            hapusCatatan(index);
+        };
+
+        kotak.append(
+            judul,
+            tanggal,
+            isi,
+            tombolEdit,
+            tombolHapus
+        );
+
+        daftar.appendChild(kotak);
     });
-}
-
-function escapeHTML(teks) {
-    return String(teks).replace(/[&<>"']/g, function(char) {
-        return {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        }[char];
-    });
-}
-
-function simpanCatatan() {
-    let judul = document.getElementById("judul").value.trim();
-    let isi = document.getElementById("isi").value.trim();
-
-    if (judul === "" || isi === "") {
-        alert("Judul dan isi catatan harus diisi!");
-        return;
-    }
-
-    if (editIndex === -1) {
-        let tanggal = new Date().toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        });
-
-        catatan.unshift({judul, isi, tanggal});
-    } else {
-        catatan[editIndex].judul = judul;
-        catatan[editIndex].isi = isi;
-        editIndex = -1;
-    }
-
-    localStorage.setItem(
-        "catatanHarian",
-        JSON.stringify(catatan)
-    );
-
-    document.getElementById("judul").value = "";
-    document.getElementById("isi").value = "";
-
-    tampilkanCatatan();
 }
 
 function editCatatan(index) {
+
     document.getElementById("judul").value =
         catatan[index].judul;
 
@@ -278,23 +323,41 @@ function editCatatan(index) {
         catatan[index].isi;
 
     editIndex = index;
-    window.scrollTo({top: 0, behavior: "smooth"});
+
+    document.getElementById("batal").style.display =
+        "inline-block";
+
+    document.getElementById("tambah").scrollIntoView({
+        behavior: "smooth"
+    });
 }
 
 function hapusCatatan(index) {
+
     if (confirm("Yakin ingin menghapus catatan ini?")) {
+
         catatan.splice(index, 1);
 
-        localStorage.setItem(
-            "catatanHarian",
-            JSON.stringify(catatan)
-        );
-
+        simpanData();
         tampilkanCatatan();
+
     }
 }
 
+function kosongkanForm() {
+    document.getElementById("judul").value = "";
+    document.getElementById("isi").value = "";
+}
+
+function batalEdit() {
+    editIndex = -1;
+    kosongkanForm();
+
+    document.getElementById("batal").style.display = "none";
+}
+
 tampilkanCatatan();
+
 </script>
 
 </body>
