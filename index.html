@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catatan Harian</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #f4efff;
+    color: #40334f;
+    padding: 30px 15px;
+}
+
+.container {
+    max-width: 850px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #cbb4f5, #a98be7);
+    color: white;
+    border-radius: 20px;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 15px;
+}
+
+.form-catatan, .daftar-catatan {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px #d9c9ef;
+}
+
+h2 {
+    margin-bottom: 18px;
+    color: #8864c5;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 15px;
+    border: 1px solid #d8c8f2;
+    border-radius: 10px;
+    outline: none;
+    font-size: 15px;
+}
+
+textarea {
+    height: 130px;
+    resize: vertical;
+}
+
+input:focus, textarea:focus {
+    border-color: #a98be7;
+}
+
+button {
+    border: none;
+    padding: 11px 18px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.simpan {
+    background: #a98be7;
+    color: white;
+}
+
+.simpan:hover {
+    background: #8966cb;
+}
+
+.catatan {
+    background: #faf7ff;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border-left: 5px solid #b69be9;
+}
+
+.catatan h3 {
+    margin-bottom: 8px;
+    color: #7553ae;
+}
+
+.tanggal {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.isi {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.edit {
+    background: #e6dafa;
+    color: #63469c;
+    margin-right: 5px;
+}
+
+.hapus {
+    background: #f8d9e0;
+    color: #a43d58;
+}
+
+.kosong {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #9b8bad;
+    font-size: 13px;
+}
+
+@media(max-width: 600px) {
+    header h1 {
+        font-size: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>📖 CATATAN HARIAN</h1>
+    <p>Tempat menyimpan cerita dan kenangan setiap hari.</p>
+</header>
+
+<section class="form-catatan">
+    <h2>✍️ Tulis Catatan Baru</h2>
+
+    <input type="text" id="judul"
+    placeholder="Masukkan judul catatan">
+
+    <textarea id="isi"
+    placeholder="Tuliskan ceritamu hari ini..."></textarea>
+
+    <button class="simpan" onclick="simpanCatatan()">
+        Simpan Catatan
+    </button>
+</section>
+
+<section class="daftar-catatan">
+    <h2>📚 Daftar Catatan</h2>
+    <div id="daftar">
+        <p class="kosong">Belum ada catatan.</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Catatan Harian | Dibuat dengan ❤️</p>
+</footer>
+
+</div>
+
+<script>
+let catatan = JSON.parse(
+    localStorage.getItem("catatanHarian")
+) || [];
+
+let editIndex = -1;
+
+function tampilkanCatatan() {
+    let daftar = document.getElementById("daftar");
+
+    daftar.innerHTML = "";
+
+    if (catatan.length === 0) {
+        daftar.innerHTML =
+        '<p class="kosong">Belum ada catatan.</p>';
+        return;
+    }
+
+    catatan.forEach((data, index) => {
+        daftar.innerHTML += `
+        <div class="catatan">
+            <h3>${escapeHTML(data.judul)}</h3>
+            <p class="tanggal">${data.tanggal}</p>
+            <p class="isi">${escapeHTML(data.isi)}</p>
+
+            <button class="edit"
+            onclick="editCatatan(${index})">
+                Edit
+            </button>
+
+            <button class="hapus"
+            onclick="hapusCatatan(${index})">
+                Hapus
+            </button>
+        </div>
+        `;
+    });
+}
+
+function escapeHTML(teks) {
+    return String(teks).replace(/[&<>"']/g, function(char) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char];
+    });
+}
+
+function simpanCatatan() {
+    let judul = document.getElementById("judul").value.trim();
+    let isi = document.getElementById("isi").value.trim();
+
+    if (judul === "" || isi === "") {
+        alert("Judul dan isi catatan harus diisi!");
+        return;
+    }
+
+    if (editIndex === -1) {
+        let tanggal = new Date().toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+
+        catatan.unshift({judul, isi, tanggal});
+    } else {
+        catatan[editIndex].judul = judul;
+        catatan[editIndex].isi = isi;
+        editIndex = -1;
+    }
+
+    localStorage.setItem(
+        "catatanHarian",
+        JSON.stringify(catatan)
+    );
+
+    document.getElementById("judul").value = "";
+    document.getElementById("isi").value = "";
+
+    tampilkanCatatan();
+}
+
+function editCatatan(index) {
+    document.getElementById("judul").value =
+        catatan[index].judul;
+
+    document.getElementById("isi").value =
+        catatan[index].isi;
+
+    editIndex = index;
+    window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function hapusCatatan(index) {
+    if (confirm("Yakin ingin menghapus catatan ini?")) {
+        catatan.splice(index, 1);
+
+        localStorage.setItem(
+            "catatanHarian",
+            JSON.stringify(catatan)
+        );
+
+        tampilkanCatatan();
+    }
+}
+
+tampilkanCatatan();
+</script>
+
+</body>
+</html>
