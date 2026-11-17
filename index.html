@@ -1,5 +1,8 @@
 
 
+
+
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,9 +12,9 @@
 
 <style>
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -27,15 +30,15 @@ body {
 }
 
 header {
-    background: linear-gradient(135deg,#cbb4f5,#a98be7);
+    background: linear-gradient(135deg, #cbb4f5, #a987df);
     color: white;
-    text-align: center;
     padding: 35px 15px;
-    border-radius: 20px;
+    text-align: center;
+    border-radius: 18px;
 }
 
 header h1 {
-    font-size: 32px;
+    font-size: 30px;
     margin-bottom: 10px;
 }
 
@@ -43,32 +46,41 @@ nav {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
     background: white;
-    padding: 18px;
-    border-radius: 15px;
+    padding: 15px;
     margin: 20px 0;
+    border-radius: 15px;
 }
 
-nav a {
-    text-decoration: none;
+nav button {
+    border: none;
+    background: transparent;
     color: #805bb8;
+    padding: 12px 18px;
     font-weight: bold;
-    padding: 10px 15px;
-    border-radius: 9px;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 10px;
 }
 
-nav a:hover {
+nav button.active,
+nav button:hover {
     background: #eee4ff;
+    color: #6844a5;
 }
 
-section {
+.page {
+    display: none;
     background: white;
-    padding: 25px;
+    padding: 30px;
     border-radius: 18px;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 15px #d9c9ef;
-    scroll-margin-top: 15px;
+    box-shadow: 0 5px 15px #dfd1f2;
+    min-height: 350px;
+}
+
+.page.active {
+    display: block;
 }
 
 h2 {
@@ -76,82 +88,154 @@ h2 {
     margin-bottom: 20px;
 }
 
+.welcome {
+    text-align: center;
+    padding: 30px 10px;
+}
+
+.welcome h2 {
+    font-size: 27px;
+}
+
+.welcome p {
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.total-box {
+    background: #f4efff;
+    padding: 25px;
+    border-radius: 15px;
+    display: inline-block;
+    min-width: 180px;
+    margin-top: 15px;
+}
+
+.total-box h3 {
+    font-size: 38px;
+    color: #926bd0;
+}
+
 input, textarea {
     width: 100%;
     padding: 13px;
-    margin-bottom: 15px;
+    margin: 10px 0 18px;
     border: 1px solid #d8c8f2;
     border-radius: 10px;
     font-size: 15px;
     outline: none;
 }
 
+input:focus, textarea:focus {
+    border-color: #a987df;
+}
+
 textarea {
-    height: 130px;
+    height: 150px;
     resize: vertical;
 }
 
-button {
-    padding: 11px 18px;
+label {
+    color: #7553ae;
+    font-weight: bold;
+}
+
+.main-btn {
+    background: #a987df;
+    color: white;
+    padding: 12px 20px;
     border: none;
     border-radius: 9px;
     cursor: pointer;
-    margin-right: 5px;
-    margin-top: 5px;
+    font-size: 14px;
 }
 
-.simpan {
-    background: #a98be7;
-    color: white;
+.main-btn:hover {
+    background: #8966c5;
 }
 
-.edit {
-    background: #e6dafa;
-    color: #63469c;
-}
-
-.hapus {
-    background: #f8d9e0;
-    color: #a43d58;
+.cancel-btn {
+    background: #eee4ff;
+    color: #6844a5;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
 }
 
 .catatan {
     background: #faf7ff;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 15px;
     border-left: 5px solid #b69be9;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 12px;
 }
 
 .catatan h3 {
-    color: #7553ae;
+    color: #805bb8;
     margin-bottom: 8px;
 }
 
 .tanggal {
-    font-size: 12px;
+    font-size: 13px;
     color: #999;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .isi {
     white-space: pre-wrap;
-    line-height: 1.6;
-    margin-bottom: 10px;
+    line-height: 1.7;
+    margin-bottom: 12px;
 }
 
-.kosong {
+.edit-btn {
+    background: #e6dafa;
+    color: #63469c;
+}
+
+.delete-btn {
+    background: #f8d9e0;
+    color: #a43d58;
+}
+
+.edit-btn, .delete-btn {
+    padding: 9px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.empty {
     text-align: center;
     color: #999;
-    padding: 20px;
+    padding: 35px 10px;
 }
 
 footer {
     text-align: center;
     color: #9b8bad;
-    padding: 20px;
+    padding: 25px 10px;
 }
 
+@media(max-width:600px) {
+    body {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    .page {
+        padding: 20px;
+    }
+
+    nav button {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
 </style>
 </head>
 
@@ -159,39 +243,96 @@ footer {
 
 <div class="container">
 
-<header id="beranda">
+<header>
     <h1>📖 CATATAN HARIAN</h1>
     <p>Tempat menyimpan cerita dan kenangan setiap hari.</p>
 </header>
 
 <nav>
-    <a href="#beranda">🏠 Beranda</a>
-    <a href="#tambah">✍️ Tambah Catatan</a>
-    <a href="#daftar">📚 Daftar Catatan</a>
+    <button class="active" onclick="bukaHalaman('beranda',this)">
+        🏠 Beranda
+    </button>
+
+    <button onclick="bukaHalaman('tambah',this)">
+        ✍️ Tambah Catatan
+    </button>
+
+    <button onclick="bukaHalaman('daftar',this)">
+        📚 Daftar Catatan
+    </button>
 </nav>
 
-<section id="tambah">
-    <h2>✍️ Tulis Catatan Baru</h2>
+<!-- HALAMAN BERANDA -->
+<section id="beranda" class="page active">
 
-    <input type="text" id="judul"
-    placeholder="Masukkan judul catatan">
+    <div class="welcome">
+        <h2>🌷 Selamat Datang!</h2>
 
-    <textarea id="isi"
-    placeholder="Tuliskan ceritamu hari ini..."></textarea>
+        <p>
+            Selamat datang di website Catatan Harian.
+            Website ini dibuat untuk menyimpan berbagai cerita,
+            pengalaman, kegiatan, dan kenangan sehari-hari.
+            Tuliskan setiap momen berharga agar tidak terlupakan.
+        </p>
 
-    <button class="simpan" onclick="simpanCatatan()">
-        Simpan Catatan
-    </button>
+        <div class="total-box">
+            <h3 id="jumlah">0</h3>
+            <p>Total Catatan Tersimpan</p>
+        </div>
 
-    <button class="edit" id="batal"
-    onclick="batalEdit()" style="display:none">
-        Batal Edit
-    </button>
+        <br><br>
+
+        <button class="main-btn"
+        onclick="bukaHalaman('tambah',document.querySelectorAll('nav button')[1])">
+            ✍️ Mulai Menulis
+        </button>
+    </div>
+
 </section>
 
-<section id="daftar">
-    <h2>📚 Daftar Catatan</h2>
+<!-- HALAMAN TAMBAH CATATAN -->
+<section id="tambah" class="page">
+
+    <h2>✍️ Tambah Catatan Baru</h2>
+
+    <form id="formCatatan">
+
+        <label>Judul Catatan</label>
+        <input type="text" id="judul"
+        placeholder="Masukkan judul catatan" required>
+
+        <label>Tanggal</label>
+        <input type="date" id="tanggal" required>
+
+        <label>Isi Catatan</label>
+        <textarea id="isi"
+        placeholder="Tuliskan cerita dan pengalamanmu hari ini..."
+        required></textarea>
+
+        <button type="submit" class="main-btn" id="tombolSimpan">
+            Simpan Catatan
+        </button>
+
+        <button type="button" class="cancel-btn"
+        id="batal" onclick="batalEdit()" style="display:none">
+            Batal Edit
+        </button>
+
+    </form>
+
+</section>
+
+<!-- HALAMAN DAFTAR CATATAN -->
+<section id="daftar" class="page">
+
+    <h2>📚 Daftar Catatan Saya</h2>
+
+    <p style="margin-bottom:20px;color:#999">
+        Berikut adalah semua cerita dan kenangan yang telah kamu simpan.
+    </p>
+
     <div id="daftarCatatan"></div>
+
 </section>
 
 <footer>
@@ -202,12 +343,40 @@ footer {
 
 <script>
 
+// Mengambil catatan yang tersimpan
 let catatan = JSON.parse(
-    localStorage.getItem("catatanHarian")
-) || [];
+    localStorage.getItem("catatanHarian") || "[]"
+);
 
 let editIndex = -1;
 
+// Navigasi halaman
+function bukaHalaman(nama, tombol) {
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    document.getElementById(nama).classList.add("active");
+
+    document.querySelectorAll("nav button").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    if (tombol) tombol.classList.add("active");
+
+    if (nama === "beranda") {
+        updateJumlah();
+    }
+
+    if (nama === "daftar") {
+        tampilkanCatatan();
+    }
+
+    window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+// Simpan data
 function simpanData() {
     localStorage.setItem(
         "catatanHarian",
@@ -215,28 +384,48 @@ function simpanData() {
     );
 }
 
-function simpanCatatan() {
+// Mengatur tanggal hari ini
+function tanggalHariIni() {
+    let sekarang = new Date();
+    let tahun = sekarang.getFullYear();
+    let bulan = String(sekarang.getMonth()+1).padStart(2,"0");
+    let hari = String(sekarang.getDate()).padStart(2,"0");
+
+    return `${tahun}-${bulan}-${hari}`;
+}
+
+document.getElementById("tanggal").value = tanggalHariIni();
+
+// Menambah dan memperbarui catatan
+document.getElementById("formCatatan").addEventListener(
+    "submit", function(event) {
+
+    event.preventDefault();
 
     let judul = document.getElementById("judul").value.trim();
+    let tanggal = document.getElementById("tanggal").value;
     let isi = document.getElementById("isi").value.trim();
 
-    if (judul === "" || isi === "") {
-        alert("Judul dan isi catatan harus diisi!");
+    if (!judul || !tanggal || !isi) {
+        alert("Semua kolom harus diisi!");
         return;
     }
 
-    if (editIndex === -1) {
+    let tanggalTampil = new Date(
+        tanggal + "T00:00:00"
+    ).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
 
-        let tanggal = new Date().toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        });
+    if (editIndex === -1) {
 
         catatan.unshift({
             judul: judul,
-            isi: isi,
-            tanggal: tanggal
+            tanggal: tanggal,
+            tanggalTampil: tanggalTampil,
+            isi: isi
         });
 
         alert("Catatan berhasil disimpan!");
@@ -244,9 +433,14 @@ function simpanCatatan() {
     } else {
 
         catatan[editIndex].judul = judul;
+        catatan[editIndex].tanggal = tanggal;
+        catatan[editIndex].tanggalTampil = tanggalTampil;
         catatan[editIndex].isi = isi;
 
         editIndex = -1;
+
+        document.getElementById("tombolSimpan").textContent =
+            "Simpan Catatan";
 
         document.getElementById("batal").style.display = "none";
 
@@ -254,10 +448,21 @@ function simpanCatatan() {
     }
 
     simpanData();
-    kosongkanForm();
-    tampilkanCatatan();
-}
 
+    this.reset();
+    document.getElementById("tanggal").value = tanggalHariIni();
+
+    updateJumlah();
+    tampilkanCatatan();
+
+    bukaHalaman(
+        "daftar",
+        document.querySelectorAll("nav button")[2]
+    );
+
+});
+
+// Menampilkan daftar catatan
 function tampilkanCatatan() {
 
     let daftar = document.getElementById("daftarCatatan");
@@ -266,7 +471,7 @@ function tampilkanCatatan() {
 
     if (catatan.length === 0) {
         daftar.innerHTML =
-        '<p class="kosong">Belum ada catatan.</p>';
+            '<div class="empty">📖<br><br>Belum ada catatan.<br>Yuk, mulai tulis ceritamu!</div>';
         return;
     }
 
@@ -280,82 +485,100 @@ function tampilkanCatatan() {
 
         let tanggal = document.createElement("p");
         tanggal.className = "tanggal";
-        tanggal.textContent = data.tanggal;
+        tanggal.textContent = data.tanggalTampil || data.tanggal || "-";
 
         let isi = document.createElement("p");
         isi.className = "isi";
         isi.textContent = data.isi;
 
-        let tombolEdit = document.createElement("button");
-        tombolEdit.className = "edit";
-        tombolEdit.textContent = "Edit";
+        let edit = document.createElement("button");
+        edit.className = "edit-btn";
+        edit.textContent = "Edit";
 
-        tombolEdit.onclick = function() {
+        edit.onclick = function() {
             editCatatan(index);
         };
 
-        let tombolHapus = document.createElement("button");
-        tombolHapus.className = "hapus";
-        tombolHapus.textContent = "Hapus";
+        let hapus = document.createElement("button");
+        hapus.className = "delete-btn";
+        hapus.textContent = "Hapus";
 
-        tombolHapus.onclick = function() {
+        hapus.onclick = function() {
             hapusCatatan(index);
         };
 
-        kotak.append(
-            judul,
-            tanggal,
-            isi,
-            tombolEdit,
-            tombolHapus
-        );
-
+        kotak.append(judul, tanggal, isi, edit, hapus);
         daftar.appendChild(kotak);
+
     });
 }
 
+// Mengedit catatan
 function editCatatan(index) {
+
+    editIndex = index;
 
     document.getElementById("judul").value =
         catatan[index].judul;
 
+    document.getElementById("tanggal").value =
+        /^\d{4}-\d{2}-\d{2}$/.test(catatan[index].tanggal || "")
+        ? catatan[index].tanggal
+        : tanggalHariIni();
+
     document.getElementById("isi").value =
         catatan[index].isi;
 
-    editIndex = index;
+    document.getElementById("tombolSimpan").textContent =
+        "Perbarui Catatan";
 
     document.getElementById("batal").style.display =
         "inline-block";
 
-    document.getElementById("tambah").scrollIntoView({
-        behavior: "smooth"
-    });
+    bukaHalaman(
+        "tambah",
+        document.querySelectorAll("nav button")[1]
+    );
 }
 
+// Menghapus catatan
 function hapusCatatan(index) {
 
-    if (confirm("Yakin ingin menghapus catatan ini?")) {
+    if (confirm("Apakah kamu yakin ingin menghapus catatan ini?")) {
 
         catatan.splice(index, 1);
 
         simpanData();
         tampilkanCatatan();
+        updateJumlah();
 
     }
 }
 
-function kosongkanForm() {
-    document.getElementById("judul").value = "";
-    document.getElementById("isi").value = "";
-}
-
+// Membatalkan edit
 function batalEdit() {
-    editIndex = -1;
-    kosongkanForm();
 
-    document.getElementById("batal").style.display = "none";
+    editIndex = -1;
+
+    document.getElementById("formCatatan").reset();
+
+    document.getElementById("tanggal").value = tanggalHariIni();
+
+    document.getElementById("tombolSimpan").textContent =
+        "Simpan Catatan";
+
+    document.getElementById("batal").style.display =
+        "none";
 }
 
+// Menghitung jumlah catatan
+function updateJumlah() {
+    document.getElementById("jumlah").textContent =
+        catatan.length;
+}
+
+// Menampilkan data awal
+updateJumlah();
 tampilkanCatatan();
 
 </script>
